@@ -2,6 +2,7 @@
 
 [![](https://img.shields.io/badge/Chrome%20Web%20Store-%v1.0.0-blue)](https://chrome.google.com/webstore/detail/YOUR_EXTENSION_ID) <!-- 请替换 YOUR_EXTENSION_ID -->
 [![](https://img.shields.io/badge/License-MIT-green)](LICENSE) <!-- 假设是 MIT 协议 -->
+[English Version](README.en.md)
 
 Dify Tools 是一款 Chrome 扩展，旨在帮助用户更高效地调试 Dify 工作流。它解决了在 Dify 调试页面无法直接重新执行历史运行记录的痛点，提供"一键重新运行"功能以简化测试迭代。插件还集成了一个实用的小工具，用于快速模糊图片背景。
 
