@@ -68,18 +68,12 @@ export async function getWorkflowRuns(domain, appId) {
 }
 
 /**
- * 映射状态为中文
- * @param {string} status - 英文状态
- * @returns {string} 中文状态
+ * Returns the original status string.
+ * @param {string} status - The status string.
+ * @returns {string} The original status string.
  */
-export function mapStatusToChinese(status) {
-  const statusMap = {
-    'succeeded': '成功',
-    'failed': '失败',
-    'running': '进行中',
-    'pending': '等待中'
-  };
-  return statusMap[status] || status;
+export function mapStatusToString(status) {
+  return status;
 }
 
 /**
