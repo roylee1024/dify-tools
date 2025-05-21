@@ -1,10 +1,10 @@
 {
   "extName": {
-    "message": "Blur Background - AI Background Blur Tool",
+    "message": "Dify Tools - Workflow Monitor",
     "description": ""
   },
   "extDescription": {
-    "message": "Blur image backgrounds with AI precision to highlight subjects—ideal for photography, e-commerce, social media, and design.",
+    "message": "Monitor and analyze Dify workflow execution data, including run status, execution time, and token usage.",
     "description": ""
   }
 }

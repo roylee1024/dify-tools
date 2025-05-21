@@ -1,0 +1,120 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Dify Tools Chrome Extension Tech Stack
+
+## Core Technologies
+
+### Frontend Framework
+- **Vue 3** - Using the Composition API for reactive and maintainable components
+- **Element Plus** - UI component library providing pre-built components with consistent styling
+- **Tailwind CSS** - Utility-first CSS framework for rapid UI development
+
+### Build Tools
+- **Vite** - Fast build tool and dev server
+- **@crxjs/vite-plugin** - Plugin for building Chrome extensions with Vite
+- **unplugin-auto-import** - Auto imports Vue 3 and Element Plus APIs
+- **unplugin-vue-components** - Auto imports Element Plus components
+
+### Network & Data
+- **Axios** - HTTP client for API requests
+
+## Development Workflow
+
+### Local Development
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+```
+
+### Production Build
+```bash
+# Build for production
+pnpm build
+```
+
+## Directory Structure
+
+```
+├── src/                # Source code
+│   ├── pages/          # Extension pages
+│   ├── components/     # Reusable components
+│   └── utils/          # Utility functions
+├── _locales/           # Internationalization files
+├── dist/               # Build output
+├── manifest.json       # Extension manifest
+└── vite.config.js      # Build configuration
+```
+
+## 项目概述
+这是一个基于 Vue 3 的 Chrome 扩展项目，用于提供 Dify 相关的工具功能。项目使用现代化的前端技术栈，采用组件化开发方式，并集成了 Element Plus 作为 UI 组件库。
+
+## 项目结构说明
+
+```
+├── src/                    # 源代码目录
+│   ├── pages/             # 页面组件
+│   │   ├── welcome/       # 欢迎页面
+│   │   └── popup/         # 弹出窗口
+│   ├── components/        # 公共组件
+│   └── utils/             # 工具函数
+├── dist/                  # 构建输出目录
+├── _locales/             # 国际化文件
+├── manifest.json         # Chrome 扩展配置文件
+└── vite.config.js        # Vite 配置文件
+```
+
+## 开发指南
+
+### 开发环境设置
+1. 安装依赖：
+   ```bash
+   pnpm install
+   ```
+
+2. 启动开发服务器：
+   ```bash
+   pnpm dev
+   ```
+
+### 开发规范
+1. 组件开发
+   - 使用 Vue 3 Composition API
+   - 组件文件使用 PascalCase 命名
+   - 组件属性使用 kebab-case 命名
+
+2. 样式开发
+   - 优先使用 Tailwind CSS 类
+   - 自定义样式使用 scoped CSS
+   - 遵循 BEM 命名规范
+
+3. 代码组织
+   - 相关功能放在同一目录下
+   - 公共组件放在 components 目录
+   - 工具函数放在 utils 目录
+
+## 构建说明
+
+### 构建命令
+```bash
+pnpm build
+```
+
+### 构建输出
+- 构建产物位于 `dist` 目录
+- 包含 manifest.json 和所有必要的资源文件
+
+### 开发调试
+1. 在 Chrome 浏览器中加载 `dist` 目录
+2. 使用 Chrome 开发者工具进行调试
+3. 支持热更新开发
+
+## 注意事项
+1. 确保 manifest.json 中的配置正确
+2. 注意 Chrome 扩展的安全限制
+3. 遵循 Chrome Web Store 的发布规范

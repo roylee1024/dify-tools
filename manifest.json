@@ -1,10 +1,16 @@
 {
-  "name": "__MSG_extName__",
+  "name": "dify-tools",
   "manifest_version": 3,
-  "description": "__MSG_extDescription__",
+  "description": "dify-tools",
   "version": "1.0.0",
   "permissions": [
-    "contextMenus"
+    "contextMenus",
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+     "<all_urls>"
   ],
   "default_locale": "en",
   "background": {
@@ -13,7 +19,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*/*.pdf"],
+      "matches": ["<all_urls>"],
       "js": [
         "src/content/content.js"
       ],
@@ -24,14 +30,15 @@
   ],
   "action": {
     "default_icon": {
-      "32": "src/public/images/32.png",
-      "64": "src/public/images/64.png",
-      "128": "src/public/images/128.png"
-    }
+      "32": "src/public/dify-color.png",
+      "64": "src/public/dify-color.png",
+      "128": "src/public/dify-color.png"
+    },
+    "default_popup": "src/pages/popup/index.html"
   },
   "icons": {
-    "32": "src/public/images/32.png",
-    "64": "src/public/images/64.png",
-    "128": "src/public/images/128.png"
+    "32": "src/public/dify-color.png",
+    "64": "src/public/dify-color.png",
+    "128": "src/public/dify-color.png"
   }
 }

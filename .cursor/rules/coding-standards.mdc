@@ -1,0 +1,106 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Coding Standards for Dify Tools Chrome Extension
+
+## Vue Component Guidelines
+
+### File Organization
+- Component files should use PascalCase (e.g., `ButtonCounter.vue`)
+- Each component should be in its own file
+- Related components should be grouped in subdirectories
+
+### Component Structure
+```vue
+<script setup>
+// imports first
+import { ref } from 'vue'
+import ChildComponent from './ChildComponent.vue'
+
+// props
+const props = defineProps({
+  title: {
+    type: String,
+    required: true
+  }
+})
+
+// emits
+const emit = defineEmits(['update', 'delete'])
+
+// reactive state
+const count = ref(0)
+
+// computed properties
+const doubleCount = computed(() => count.value * 2)
+
+// methods
+const increment = () => {
+  count.value++
+  emit('update', count.value)
+}
+</script>
+
+<template>
+  <div class="component-container">
+    <!-- Component template -->
+  </div>
+</template>
+
+<style scoped>
+/* Component styles */
+</style>
+```
+
+## CSS Guidelines
+
+### CSS Priority
+1. Use Tailwind CSS utility classes whenever possible
+2. Use Element Plus's built-in customization (when using Element Plus components)
+3. Use scoped CSS for component-specific styles
+4. Follow BEM naming convention for custom CSS classes
+
+### BEM Naming Example
+```css
+/* Block */
+.card {
+  /* ... */
+}
+
+/* Element */
+.card__title {
+  /* ... */
+}
+
+/* Modifier */
+.card--featured {
+  /* ... */
+}
+```
+
+## JavaScript Guidelines
+
+### General
+- Use ES6+ features
+- Use arrow functions for callbacks
+- Use async/await for asynchronous operations
+- Use destructuring for props and state
+
+### Naming Conventions
+- Use camelCase for variables, functions, and methods
+- Use PascalCase for components and classes
+- Use UPPER_SNAKE_CASE for constants
+
+### Imports Order
+1. External libraries
+2. Internal modules
+3. Components
+4. Assets/styles
+
+## Testing Guidelines
+
+- Write unit tests for utility functions
+- Write component tests for complex components
+- Make sure tests cover edge cases
