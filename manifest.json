@@ -1,0 +1,44 @@
+{
+  "name": "dify-tools",
+  "manifest_version": 3,
+  "description": "dify-tools",
+  "version": "1.0.0",
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+     "<all_urls>"
+  ],
+  "default_locale": "en",
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "src/content/content.js"
+      ],
+      "run_at": "document_end",
+      "match_about_blank": true,
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "32": "src/public/dify-color.png",
+      "64": "src/public/dify-color.png",
+      "128": "src/public/dify-color.png"
+    },
+    "default_popup": "src/pages/popup/index.html"
+  },
+  "icons": {
+    "32": "src/public/dify-color.png",
+    "64": "src/public/dify-color.png",
+    "128": "src/public/dify-color.png"
+  }
+}

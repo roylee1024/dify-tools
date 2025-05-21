@@ -1,0 +1,74 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Chrome Extension Development Guidelines
+
+## Manifest.json
+
+The [manifest.json](mdc:manifest.json) file is the configuration file for the extension. It defines:
+
+- Basic metadata (name, version, description)
+- Permissions required by the extension
+- Extension resources (icons, scripts, HTML pages)
+- Extension behavior (background scripts, content scripts)
+
+## Extension Components
+
+### Popup
+The popup UI appears when users click the extension icon in the browser toolbar.
+- Keep the popup UI simple and focused
+- Design for limited screen space
+- Avoid heavy operations that might cause the popup to freeze
+
+### Background Script
+Runs in the background and manages extension state.
+- Use for long-running tasks
+- Avoid heavy computation in the background script
+- Use message passing to communicate with other parts of the extension
+
+### Content Scripts
+Run in the context of web pages.
+- Use to interact with page content
+- Avoid injecting unnecessary scripts
+- Follow Chrome's security guidelines
+
+### Options Page
+Provides configuration settings for the extension.
+- Group related settings together
+- Provide clear descriptions for each setting
+- Save settings automatically when changed
+
+## Security Guidelines
+
+### Permissions
+- Request only the permissions you need
+- Explain to users why each permission is needed
+- Use optional permissions when possible
+
+### Content Security Policy
+- Set appropriate Content Security Policy in the manifest
+- Avoid inline JavaScript
+- Avoid `eval()` and other unsafe functions
+
+### Data Storage
+- Use Chrome Storage API for persistent data
+- Encrypt sensitive data before storing
+- Clean up data when it's no longer needed
+
+## Performance Best Practices
+
+- Minimize the use of background resources
+- Use event-driven architecture
+- Optimize assets for size
+- Cache responses when appropriate
+- Use async/await for asynchronous operations
+
+## Publishing Guidelines
+
+- Provide clear descriptions and screenshots
+- Keep the extension size under 10MB if possible
+- Follow Chrome Web Store policies
+- Test on different Chrome versions
+- Provide regular updates and maintenance

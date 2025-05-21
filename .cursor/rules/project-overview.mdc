@@ -1,0 +1,33 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Dify Tools Chrome Extension Overview
+
+This is a Chrome extension built with Vue 3 that provides tools related to Dify functionality. The extension uses a modern frontend tech stack including Vue 3 (Composition API), Element Plus, and Tailwind CSS.
+
+## Key Project Areas
+
+### Core Structure
+- [manifest.json](mdc:manifest.json) - The extension configuration file
+- [vite.config.js](mdc:vite.config.js) - Build configuration with Vite and CRXJS
+
+### Pages
+- [src/pages/popup](mdc:src/pages/popup) - The extension popup UI
+- [src/pages/welcome](mdc:src/pages/welcome) - Welcome page for new users
+
+### Components
+- [src/components](mdc:src/components) - Reusable Vue components
+
+### Utils
+- [src/utils](mdc:src/utils) - Helper functions and utilities
+
+## Development Guidelines
+
+- Use Vue 3 Composition API for component development
+- Follow PascalCase for component filenames
+- Use kebab-case for component properties
+- Prefer Tailwind CSS classes for styling
+- Create scoped CSS for component-specific styles
+- Follow BEM naming convention for custom CSS classes

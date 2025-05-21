@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Dify Tools - Workflow Monitor",
+    "description": ""
+  },
+  "extDescription": {
+    "message": "Monitor and analyze Dify workflow execution data, including run status, execution time, and token usage.",
+    "description": ""
+  }
+}
