@@ -11,6 +11,8 @@ Dify Tools is a Chrome extension designed to help users debug Dify workflows mor
 ### 🚀 Dify Workflow Assistant
 
 The core function of this plugin is to serve as a powerful auxiliary tool for Dify workflows, making your development and debugging experience smoother.
+[step-1](docs/images/step-1.png)
+[step-2](docs/images/step-2.png)
 
 #### 1. Workflow Run History Viewer
 - **Convenient Access**: Click the Dify Tools icon in the browser toolbar to open the plugin interface in a new browser tab.
