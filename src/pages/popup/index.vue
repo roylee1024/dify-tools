@@ -166,21 +166,92 @@
           </div>
         </div>
       </el-tab-pane>
+
+      <el-tab-pane label="工作流草稿" name="workflowDrafts" class="flex-1 flex flex-col">
+        <div class="bg-white rounded-lg shadow-lg p-4 flex-1 flex flex-col">
+          <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center space-x-2">
+              <el-button
+                type="danger"
+                size="small"
+                @click="clearDrafts"
+                :disabled="cachedDrafts.length === 0"
+              >
+                清除缓存
+              </el-button>
+            </div>
+          </div>
+          
+          <el-table
+            v-if="cachedDrafts.length > 0"
+            :data="currentPageDrafts"
+            style="width: 100%"
+            size="small"
+            class="flex-1"
+          >
+            <el-table-column
+              prop="data.created_at"
+              label="创建时间"
+              width="180"
+            >
+              <template #default="{ row }">
+                {{ formatDate(row.data.updated_at) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="data.created_by.name"
+              label="名称"
+            />
+            <el-table-column
+              label="操作"
+              width="120"
+            >
+              <template #default="{ row }">
+                <el-button
+                  size="small"
+                  type="warning"
+                  @click="handleRollback(row)"
+                >
+                  回滚
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          
+          <el-empty
+            v-else
+            description="暂无缓存的草稿"
+          />
+
+          <div v-if="cachedDrafts.length > 0" class="flex justify-center mt-4">
+            <el-pagination
+              v-model:current-page="draftCurrentPage"
+              v-model:page-size="draftPageSize"
+              :page-sizes="[5]"
+              :total="draftTotalRecords"
+              layout="total, sizes, prev, pager, next"
+              @size-change="handleDraftSizeChange"
+              @current-change="handleDraftCurrentChange"
+            />
+          </div>
+        </div>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, h } from 'vue';
+import { ref, computed, onMounted, watch, h, onUnmounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { extractUrlInfo, getWorkflowRuns, mapStatusToString, timestampToDate, getWorkflowAppLogs, api } from '../../lib/api';
+import { extractUrlInfo, getWorkflowRuns, mapStatusToString, timestampToDate, getWorkflowAppLogs, getDraft,saveDraft, api } from '../../lib/api';
+import { startPolling, stopPolling, getCachedDrafts, clearCachedDrafts, getNewestHash } from '../../lib/workflow-cache';
 
 // URL Related
 const difyUrl = ref('');
 const urlInfo = ref({ domain: null, appId: null });
 
 // Tabs State
-const activeTabName = ref('debugLogs'); // 'debugLogs' or 'apiLogs'
+const activeTabName = ref('debugLogs'); // 'debugLogs', 'apiLogs', or 'workflowDrafts'
 
 // Data and Loading State - Debug Logs
 const workflowData = ref([]);
@@ -199,6 +270,11 @@ const apiLogCurrentPage = ref(1);
 const apiLogPageSize = ref(5);
 const apiLogTotalRecords = ref(0);
 
+// 工作流草稿相关状态
+const cachedDrafts = ref([]);
+const draftCurrentPage = ref(1);
+const draftPageSize = ref(5);
+const draftTotalRecords = ref(0);
 
 // Watch URL Changes
 watch(difyUrl, (newUrl) => {
@@ -234,11 +310,22 @@ watch(activeTabName, (newTab) => {
   }
 });
 
-const fetchDataForCurrentTab = (tabName) => {
+const fetchDataForCurrentTab = async (tabName) => {
     if (tabName === 'apiLogs') {
         fetchApiLogData();
     } else if (tabName === 'debugLogs') {
         fetchWorkflowData();
+    } else if (tabName === 'workflowDrafts') {
+        // 获取缓存的草稿数据
+        try {
+            const drafts = await getCachedDrafts(urlInfo.value.appId);
+            console.log('drafts', drafts);
+            cachedDrafts.value = drafts;
+            draftTotalRecords.value = drafts.length;
+        } catch (error) {
+            console.error('Failed to get cached drafts:', error);
+            ElMessage.error('获取缓存的草稿失败: ' + (error.message || '未知错误'));
+        }
     }
 }
 
@@ -370,7 +457,8 @@ const formatDate = (timestamp) => {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
+    second: '2-digit',
+    hour12: false
   });
 };
 
@@ -693,6 +781,8 @@ const fillParametersToPage = async (params) => {
   }
 };
 
+
+
 // Initialization
 onMounted(async () => {
   try {
@@ -710,20 +800,19 @@ onMounted(async () => {
     }
     
     if (targetUrl) {
-      if (targetUrl.includes('/app/') && (targetUrl.includes('/workflow') || targetUrl.match(/\/app\/[a-f0-9-]+\/?(logs|workflow)?$/))) { // More flexible regex for URL matching
-        difyUrl.value = targetUrl; // Set the input field
-        const info = extractUrlInfo(targetUrl); // This will parse the URL for domain/appId
+      if (targetUrl.includes('/app/') && (targetUrl.includes('/workflow') || targetUrl.match(/\/app\/[a-f0-9-]+\/?(logs|workflow)?$/))) {
+        difyUrl.value = targetUrl;
+        const info = extractUrlInfo(targetUrl);
         urlInfo.value = info;
         
         if (info.appId) {
-          await getConsoleToken(); // Attempt to get token first
-          if(consoleToken.value){ // If token is successfully retrieved
-             fetchDataForCurrentTab(activeTabName.value); // Fetch data for the initially active tab
+          await getConsoleToken();
+          if(consoleToken.value){
+             fetchDataForCurrentTab(activeTabName.value);
           } else {
             ElMessage.warning('Failed to get authentication token. Please ensure Dify console is logged in or refresh the extension. Data may not load.');
           }
         } else {
-            // If no appId, it might be a base Dify URL, not a specific workflow
             ElMessage.info('Please enter the full Dify workflow URL to load data.');
         }
       } else {
@@ -735,6 +824,58 @@ onMounted(async () => {
     ElMessage.error('Initialization failed: ' + (error.message || 'Unknown error'));
   }
 });
+
+// 计算当前页的草稿数据
+const currentPageDrafts = computed(() => {
+  const start = (draftCurrentPage.value - 1) * draftPageSize.value;
+  const end = start + draftPageSize.value;
+  return cachedDrafts.value.slice(start, end);
+});
+
+// 处理草稿分页变化
+const handleDraftCurrentChange = (val) => {
+  draftCurrentPage.value = val;
+};
+
+// 处理草稿每页条数变化
+const handleDraftSizeChange = (val) => {
+  draftPageSize.value = val;
+  draftCurrentPage.value = 1;
+};
+
+// 处理回滚操作
+const handleRollback = async (row) => {
+  try {
+    if (!urlInfo.value.domain || !urlInfo.value.appId) {
+      ElMessage.warning('请先输入有效的 Dify 工作流 URL');
+      return;
+    }
+    
+    // 获取最新的hash值
+    const newestHash = await getNewestHash(urlInfo.value.appId);
+    console.log('当前最新hash:', newestHash);
+    console.log('回滚到hash:', row.data.hash);
+    
+    const selectedData = {
+      environment_variables: row.data.environment_variables,
+      conversation_variables: row.data.conversation_variables,
+      graph: row.data.graph,
+      features: row.data.features,
+      hash: newestHash
+    };
+    await saveDraft(urlInfo.value.domain, urlInfo.value.appId, selectedData);
+    ElMessage.success('回滚成功');
+    
+    // 刷新当前标签页
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab && tab.id) {
+      await chrome.tabs.reload(tab.id);
+    }
+  } catch (error) {
+    console.error('回滚失败:', error);
+    ElMessage.error('回滚失败: ' + (error.message || '未知错误'));
+  }
+};
 </script>
 
 <style scoped>

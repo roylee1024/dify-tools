@@ -99,5 +99,53 @@ export const getWorkflowAppLogs = async (domain, appId, page, limit) => {
   }
 };
 
+/**
+ * 获取工作流草稿数据
+ * @param {string} domain - API域名，如 https://dify.mingxiangzhe.com
+ * @param {string} appId - 应用ID
+ * @returns {Promise<Object>} API响应数据
+ */
+export const getDraft = async (domain, appId) => {
+  if (!domain || !appId) {
+    throw new Error('Domain and App ID are required');
+  }
+  const url = `${domain}/console/api/apps/${appId}/workflows/draft`;
+  try {
+    const response = await api.get(url);
+    return response;
+  } catch (error) {
+    console.error('获取工作流草稿失败:', error);
+    throw error;
+  }
+};
+
+/**
+ * 保存工作流草稿数据
+ * @param {string} domain - API域名，如 https://dify.mingxiangzhe.com
+ * @param {string} appId - 应用ID
+ * @param {Object} draftData - 要保存的草稿数据
+ * @returns {Promise<Object>} API响应数据
+ */
+export const saveDraft = async (domain, appId, draftData) => {
+  if (!domain || !appId) {
+    throw new Error('Domain and App ID are required');
+  }
+  if (!draftData) {
+    throw new Error('Draft data is required');
+  }
+  const url = `${domain}/console/api/apps/${appId}/workflows/draft`;
+  try {
+    const response = await api.post(url, draftData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return response;
+  } catch (error) {
+    console.error('保存工作流草稿失败:', error);
+    throw error;
+  }
+};
+
 // 导出api实例
 export { api }; 
